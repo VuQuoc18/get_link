@@ -1,0 +1,117 @@
+
+  
+  <!-- Header -->
+  <header class="masthead">
+    <div class="container d-flex h-100 align-items-center">
+      <div class="mx-auto text-center">
+        <h1 class="mx-auto my-0 text-uppercase">GET LINK MP3</h1>
+        <h3 class="text-white-50 mx-auto mt-2 mb-1">Input link below and wait till result append</h3>
+        <h2 class="text-white-50 mx-auto mb-3">Ex: "https://artlist.io/song/11610/above-a-cloud"</h2>
+        <div class="form-group">
+            <label for="usr">URL:</label>
+            <input type="text" class="form-control" id="input-link">
+        </div>
+        <a class="btn btn-primary js-scroll-trigger get-link">Get Link artlist.io</a>
+        <a class="btn btn-primary js-scroll-trigger get-link-2">Get Link emvn</a>
+        <div class="form-group mt-3">
+            <label for="comment">Result:</label>
+            <textarea class="form-control" rows="5" id="result"></textarea>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  
+  <!-- Footer -->
+    <footer class="bg-black small text-center text-white-50">
+        <div class="container">
+        Copyright &copy; Your Website 2019
+        </div>
+    </footer>
+    <div class="loader-contain">
+        <%= image_tag("loading.gif", class: "img-responsive loader") %>
+    </div>
+<style>
+.loader-backup-file-contain,
+.loader-contain {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: 0;
+}
+.loader-contain img{
+    visibility: hidden;
+    position: absolute;
+    top: 43%;
+    left: 49%;
+}
+.loader-contain {
+  z-index: -1;
+  background-color: rgba(255, 255, 255, 0.47);
+}
+</style>
+<script>
+    $(document).ready(function(){
+        $("body").on("click", ".get-link", function(){
+            var url = $('#input-link').val();
+            $('.loader-contain').css('z-index','100')
+            $('.loader-contain img').css('visibility', 'visible')
+            $.ajax({
+                url: '/links/get_link_artlist',
+                type: "POST",
+                data:{
+                    url: url,
+                },
+                success:function(res){
+                    console.log(res)
+                    $('.loader-contain').css('z-index','-1')
+                    $('.loader-contain img').css('visibility', 'hidden')
+                    $('#result').empty()
+                    $('#result').append(res.link)
+                    toastr.success(res.message)
+                },
+            });
+        })
+
+        $("body").on("click", ".get-link-2", function(){
+            var url = $('#input-link').val();
+            $('.loader-contain').css('z-index','100')
+            $('.loader-contain img').css('visibility', 'visible')
+            $.ajax({
+                url: '/links/get_link_emvn',
+                type: "POST",
+                data:{
+                    url: url,
+                },
+                success:function(res){
+                    console.log(res)
+                    $('.loader-contain').css('z-index','-1')
+                    $('.loader-contain img').css('visibility', 'hidden')
+                    $('#result').empty()
+                    $('#result').append(res.link)
+                    toastr.success(res.message)
+                },
+            });
+        })
+
+        $("body").on("keyup", "#input-link", function(){
+            var url = $('#input-link').val();
+            $.ajax({
+                url: '/links/check_link',
+                type: "GET",
+                data:{
+                    url: url,
+                },
+                success:function(res){
+                    console.log(res)
+                    console.log(res.message)
+                    if (res.result == "error"){
+                        toastr.error(res.message)
+                    }
+                },
+            });
+        })
+    });
+</script>
