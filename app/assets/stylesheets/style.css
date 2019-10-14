@@ -1,5 +1,10 @@
 body{
     position: relative;
+    font-size: 1.3rem!important;
+}
+
+.masthead h2{
+    max-width: 40rem!important;
 }
 
 .toast {
