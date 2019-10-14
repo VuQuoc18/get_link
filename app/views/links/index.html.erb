@@ -6,13 +6,13 @@
       <div class="mx-auto text-center">
         <h1 class="mx-auto my-0 text-uppercase">GET LINK MP3</h1>
         <h3 class="text-white-50 mx-auto mt-2 mb-1">Input link below and wait till result append</h3>
-        <h2 class="text-white-50 mx-auto mb-3">Ex: "https://artlist.io/song/11610/above-a-cloud"</h2>
+        <h2 class="text-white-50 mx-auto mb-3">Ex: "https://artlist.io/song/11610/above-a-cloud" Or "https://epicmusicvn.sourceaudio.com/#!details?id=10066907"</h2>
         <div class="form-group">
             <label for="usr">URL:</label>
             <input type="text" class="form-control" id="input-link">
         </div>
-        <a class="btn btn-primary js-scroll-trigger get-link">Get Link artlist.io</a>
-        <a class="btn btn-primary js-scroll-trigger get-link-2">Get Link emvn</a>
+        <a class="btn btn-primary js-scroll-trigger get-link">Get Link</a>
+        
         <div class="form-group mt-3">
             <label for="comment">Result:</label>
             <textarea class="form-control" rows="5" id="result"></textarea>
@@ -59,7 +59,7 @@
             $('.loader-contain').css('z-index','100')
             $('.loader-contain img').css('visibility', 'visible')
             $.ajax({
-                url: '/links/get_link_artlist',
+                url: '/links/get_link',
                 type: "POST",
                 data:{
                     url: url,

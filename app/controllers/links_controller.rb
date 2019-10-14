@@ -5,23 +5,32 @@ class LinksController < ApplicationController
         @link = Link.all
     end
 
-    def get_link_artlist
-        opts = {
-            headless: true
-        }
-
-        if (chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil))
-        opts.merge!( options: {binary: chrome_bin})
-        end 
-
+    def get_link
         url = params[:url]
         if url.empty?
             render json: {message: "Error", result: "error"} and return
         end
+        opts = {
+            headless: true
+        }
+        if (chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil))
+            opts.merge!( options: {binary: chrome_bin})
+        end 
+
         page = Watir::Browser.new :chrome, opts
         page.goto(url)
-        link = page.execute_script('return $(".bottom-player").attr("data-href")')
-        if link.nil?
+        if url.include?("epicmusicvn.sourceaudio.com") 
+            load_done = page.div(id: "waveform_container").wait_until(&:present?)
+            id_url = url[(url.index("=") + 1)..-1]
+            page.div(:id => "track_list_#{id_url}_play_button_details_page").fire_event :click
+            sleep(0.5)
+            link = page.audio.attribute_value("src")
+        elsif url.include?("artlist.io")
+            link = page.execute_script('return $(".bottom-player").attr("data-href")')
+        else
+            render json: {message: "Error", result: "error"} and return
+        end
+        if link.nil? || link.empty?
             page.quit
             render json: {message: "Link error", result: "error"} and return
         else
